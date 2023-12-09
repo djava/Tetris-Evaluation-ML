@@ -1,4 +1,3 @@
-import constants
 from constants import *
 import os
 import pickle
@@ -14,10 +13,12 @@ def init_models():
         model_creation_fn = MODEL_TYPE_ENUM_TO_CREATION_FN[model_type]
         if not os.path.isfile(path):
             os.makedirs(os.path.dirname(path), exist_ok=True)
-            model = model_creation_fn(constants.DATASET_PATH)
+            model = model_creation_fn(DATASET_PATH)
             with open(path, 'wb+') as f:
                 pickle.dump(model, f)
-            print(f'Created and saved {model_type} model at {os.path.basename(path)} | Test MSE: {round(model.test_mse, 2)}')
+            print(f'Created and saved {model_type} model at {os.path.basename(path)}',
+                  f'Test MSE: {round(model.test_mse, 2)}',
+                  sep=' | ')
             if model.cv_results is not None:
                 csv_path = f'{os.path.dirname(path)}/cv_results_{model_type}.csv'
                 model.cv_results.to_csv(csv_path, index=False)

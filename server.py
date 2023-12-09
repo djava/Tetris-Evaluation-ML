@@ -17,7 +17,7 @@ def get_model_test_mses() -> dict[str, float]:
 class RequestHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         print(f"Received GET request for {self.path}")
-        if self.path == '/model_info':
+        if self.path == '/model-info':
             self.handle_model_info()
         else:
             self.handle_404()
