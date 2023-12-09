@@ -1,4 +1,5 @@
 import pandas as pd
+import sklearn.utils
 from sklearn.model_selection import train_test_split
 
 
@@ -19,3 +20,11 @@ def get_data_split(dataset_path: str) -> (pd.DataFrame, pd.DataFrame, pd.DataFra
 
 def unimplemented():
     raise Exception("Unimplemented!")
+
+
+def relevant_cols_from_cv_results(cv_results: sklearn.utils.Bunch) -> pd.DataFrame:
+    ret = pd.DataFrame()
+    col_names = [i for i in cv_results.keys() if i.startswith('param_')] + ['mean_test_score', 'std_test_score']
+    for i in col_names:
+        ret[i] = cv_results[i]
+    return ret

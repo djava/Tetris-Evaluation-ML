@@ -23,6 +23,6 @@ MODEL_TYPE_ENUM_TO_CREATION_FN = {
     ModelType.RIDGE_REGRESSION: RidgeRegression.RidgeRegression
 }
 
-DATASET_PATH = './dataset.csv'
+DATASET_PATH = './labelled_placements.csv'
 
 SERVER_PORT = 8000
