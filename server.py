@@ -4,6 +4,7 @@ import typing
 from http.server import BaseHTTPRequestHandler
 import constants
 from models.ModelBase import ModelBase
+from urllib.parse import urlparse, parse_qs
 from utils import generate_ptp_terms
 
 _models: dict = {}
@@ -22,14 +23,17 @@ class RequestHandler(BaseHTTPRequestHandler):
     def do_GET(self) -> None:
         print(f"Received GET request for {self.path}")
 
-        content_length = int(self.headers['Content-Length'])
-        request_body = self.rfile.read(content_length).decode('utf-8')
-        if self.path == '/model-info':
+        # Parse the URL and the query string
+        parsed_url = urlparse(self.path)
+        query_params = parse_qs(parsed_url.query)
+
+        # Example: Handle different paths and their respective parameters
+        if parsed_url.path == '/model-info':
             self.handle_model_info()
-        elif self.path == '/predict':
-            self.handle_predict(request_body)
-        elif self.path == '/multi-predict':
-            self.handle_multi_predict(request_body)
+        elif parsed_url.path == '/predict':
+            self.handle_predict(query_params)
+        elif parsed_url.path == '/multi-predict':
+            self.handle_multi_predict(query_params)
         else:
             self.handle_404()
 
