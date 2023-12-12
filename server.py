@@ -2,17 +2,21 @@ import socketserver
 import json
 import typing
 from http.server import BaseHTTPRequestHandler
-import constants
+from constants import *
 from models.ModelBase import ModelBase
-from urllib.parse import urlparse, parse_qs
-from utils import generate_ptp_terms
+from utils import generate_ptp_terms, inverse_normalized_eval
 
-_models: dict = {}
+_models: dict[ModelType, ModelBase] = {}
 
 
 def predict_eval(heights: list[int]) -> dict[str, float]:
+    def denorm(y: float, dataset_type: DataSetType) -> float:
+        if dataset_type is DataSetType.NORMALIZED:
+            y = inverse_normalized_eval(y)
+        return y
+
     df = generate_ptp_terms(heights)
-    return {str(mt): mb.predict(df) for mt, mb in _models.items()}
+    return {str(mt): denorm(mb.predict(df), mb.dataset_type) for mt, mb in _models.items()}
 
 
 def get_model_test_mses() -> dict[str, float]:
@@ -104,6 +108,6 @@ def run_server(models: list[ModelBase]) -> typing.NoReturn:
     _models = models
 
     # Create the server, binding to localhost on the specified port
-    with socketserver.TCPServer(("", constants.SERVER_PORT), RequestHandler) as httpd:
-        print(f"Serving on port: {constants.SERVER_PORT}")
+    with socketserver.TCPServer(("", SERVER_PORT), RequestHandler) as httpd:
+        print(f"Serving on port: {SERVER_PORT}")
         httpd.serve_forever()

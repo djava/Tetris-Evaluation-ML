@@ -18,7 +18,7 @@ class LassoRegression(ModelBase):
     def _train(self, x_train: pd.DataFrame, y_train: pd.DataFrame) -> Lasso:
         def train_rfe(_n_features: int, _alpha: float):
             print(f"Training alpha={_alpha} with n={_n_features}")
-            self._model = Lasso(alpha=_alpha)
+            self._model = Lasso(alpha=_alpha, warm_start=True, selection='random')
             rfe = RFE(self._model, n_features_to_select=_n_features, verbose=1)
 
             rfe.fit(x_standardized, y_train)
@@ -47,8 +47,6 @@ class LassoRegression(ModelBase):
         return self._model
 
     def predict(self, data: pd.DataFrame) -> float:
-        data_standardized = StandardScaler().fit_transform(data)
-        if self._selected_features:
-            return self._model.predict(data_standardized.loc[:, self._selected_features])[0]
-        else:
-            return self._model.predict(data_standardized)[0]
+        data_standardized = pd.DataFrame(StandardScaler().fit_transform(data.loc[:, self._selected_features]),
+                                         columns=self._selected_features)
+        return self._model.predict(data_standardized)[0]

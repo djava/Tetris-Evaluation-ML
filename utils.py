@@ -1,7 +1,9 @@
+import math
+from sys import float_info
+
 import pandas as pd
 import sklearn.utils
 from sklearn.model_selection import train_test_split
-from functools import reduce
 import numpy as np
 
 
@@ -18,16 +20,33 @@ def add_local_interaction_columns(data: pd.DataFrame) -> pd.DataFrame:
     return data
 
 
-def get_data_split(dataset_path: str) -> (pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame):
+def normalize_sr_eval(y_i: float) -> float:
+    j = 0.01
+    numerator = 1.4
+    denominator = 1 + math.exp(-j * (y_i + 25))
+    return numerator / denominator
+
+
+def inverse_normalized_eval(y_i: float) -> float:
+    y_i = min(max(y_i, float_info.epsilon), 1)
+    j = 0.01
+    print(y_i)
+    return ((1 / j) * -np.log((1.4 / y_i) - 1)) - 25
+
+
+def get_data_split(dataset_path: str, normalized: bool) \
+        -> (pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame):
     """
     :param dataset_path: Path to get the dataset from
+    :param normalized: Whether to run the SR values through the normalization function
     :return: Dataset split into x_train, x_test, y_train, y_test
     """
     df = pd.read_csv(dataset_path)
-    # df = add_local_interaction_columns(df)
 
-    x = df.drop('eval', axis=1)
+    x = df.drop(['eval', 'Unnamed: 0'], axis=1)
     y = df['eval']
+    if normalized:
+        y = y.apply(normalize_sr_eval)
 
     # Split the data into training and testing sets
     # Format: x_train, x_test, y_train, y_test
@@ -48,7 +67,7 @@ def relevant_cols_from_cv_results(cv_results: sklearn.utils.Bunch) -> pd.DataFra
 
 def generate_ptp_terms(heights: list[int]) -> pd.DataFrame:
     num_columns = 10
-    df = pd.DataFrame({f'col{i}': heights[i] for i in range(num_columns)})
+    df = pd.DataFrame({f'col{i}': heights[i] for i in range(num_columns)}, index=[0])
     for width in range(2, num_columns + 1):
         for i in range(num_columns - width + 1):
             key_name = f'ptp({",".join(f"col{j}" for j in range(i, i + width))})'

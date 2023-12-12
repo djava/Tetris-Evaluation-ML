@@ -10,18 +10,6 @@ class LinearRegression(ModelBase):
         return skLinearRegression()
 
     def _train(self, x_train: pd.DataFrame, y_train: pd.DataFrame) -> skLinearRegression:
-        # rfe = RFE(self._model)
-        #
-        # param_grid = {
-        #     'n_features_to_select': np.linspace(10, 55, 10, dtype='int'),
-        # }
-        #
-        # grid_search = GridSearchCV(estimator=rfe, param_grid=param_grid, scoring='neg_mean_squared_error', cv=5,
-        #                            verbose=2)
-        #
-        # grid_search.fit(x_train, y_train)
-        #
-        # self._model = grid_search.best_estimator_
 
         # Set up cross-validation
         num_features = x_train.shape[1]

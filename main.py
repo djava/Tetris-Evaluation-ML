@@ -4,18 +4,22 @@ import os
 import pickle
 from models.ModelBase import ModelBase
 from server import run_server
+import numpy as np
 
 models: dict[ModelType, ModelBase] = {}
 FORCE_RETRAIN: list[ModelType] = []
 
-dataset = utils.get_data_split(DATASET_PATH)
+dataset_not_norm = utils.get_data_split(DATASET_PATH, False)
+dataset_norm = utils.get_data_split(DATASET_PATH, True)
 
 
 def init_models():
     global models
+
     for model_type, model_path in MODEL_PATHS.items():
-        model_creation_fn = MODEL_TYPE_ENUM_TO_CREATION_FN[model_type]
-        if not os.path.isfile(model_path) or model_type in FORCE_RETRAIN:
+        model_creation_fn, dataset_type = MODEL_TYPE_ENUM_TO_CREATION_INFO[model_type]
+        if not os.path.isfile(model_path) or model_type in FORCE_RETRAIN or '*' in FORCE_RETRAIN:
+            np.random.seed(3467)
             print(f'Training new {model_type} model...')
 
             models_dir = os.path.dirname(model_path)
@@ -23,10 +27,11 @@ def init_models():
             os.makedirs(archive_dir, exist_ok=True)  # Creates models_dir on the way
             csv_path = f'{models_dir}/cv_results_{model_type}.csv'
 
-            model = model_creation_fn(dataset)
+            dataset = dataset_norm if dataset_type is DataSetType.NORMALIZED else dataset_not_norm
+            model = model_creation_fn(dataset, dataset_type)
 
             # Archive old model if we're forcing a retrain
-            if model_type in FORCE_RETRAIN and os.path.isfile(model_path):
+            if os.path.isfile(model_path):
                 with open(model_path, 'rb') as f:
                     old_model = pickle.load(f)
                 timestamp = os.path.getmtime(model_path)
@@ -45,7 +50,7 @@ def init_models():
                 pickle.dump(model, f)
 
             print(f'Created and saved {model_type} model at {os.path.basename(model_path)}',
-                  f'Test MSE: {round(model.test_mse, 2)}',
+                  f'Test MSE: {model.test_mse:.2e}',
                   sep=' | ')
 
             if model.cv_results is not None:

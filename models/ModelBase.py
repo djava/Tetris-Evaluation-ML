@@ -1,18 +1,20 @@
-from utils import get_data_split
 from abc import ABC, abstractmethod
 import pandas as pd
 from sklearn.metrics import mean_squared_error
+
+from DataSetType import DataSetType
 
 _df = pd.DataFrame
 
 
 class ModelBase(ABC):
-    def __init__(self, dataset: (_df, _df, _df, _df)):
+    def __init__(self, dataset: (_df, _df, _df, _df), dataset_type: DataSetType):
         self._cv_results = None
         self._model = self._get_model()
         x_train, x_test, y_train, y_test = dataset
         self._selected_features = x_train.columns
         self._model = self._train(x_train, y_train)
+        self.dataset_type = dataset_type
 
         self.test_mse = self._get_mse_test_err(x_test, y_test)
 
@@ -30,7 +32,7 @@ class ModelBase(ABC):
 
     @abstractmethod
     def predict(self, data: pd.DataFrame) -> float:
-        pass
+
         if self._selected_features:
             return self._model.predict(data.loc[:, self._selected_features])[0]
         else:

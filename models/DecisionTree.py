@@ -3,7 +3,6 @@ from sklearn.tree import DecisionTreeRegressor
 from utils import relevant_cols_from_cv_results
 from .ModelBase import *
 from sklearn.model_selection import GridSearchCV
-from sklearn.feature_selection import RFE
 
 
 class DecisionTree(ModelBase):
@@ -11,13 +10,6 @@ class DecisionTree(ModelBase):
         return DecisionTreeRegressor()
 
     def _train(self, x_train: pd.DataFrame, y_train: pd.DataFrame) -> DecisionTreeRegressor:
-        # Cross-validate over different hyperparameters
-        # rfe = RFE(self._model)
-        #
-        # param_grid = {
-        #     'n_features_to_select': np.linspace(10, 55, 10, dtype='int'),
-        # }
-
         param_grid = {
             'max_depth': [None, 10, 20, 30, 50],
             'min_samples_split': [2, 5, 10],
