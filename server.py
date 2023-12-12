@@ -21,20 +21,15 @@ def get_model_test_mses() -> dict[str, float]:
 class RequestHandler(BaseHTTPRequestHandler):
     def do_GET(self) -> None:
         print(f"Received GET request for {self.path}")
+
+        content_length = int(self.headers['Content-Length'])
+        request_body = self.rfile.read(content_length).decode('utf-8')
         if self.path == '/model-info':
             self.handle_model_info()
-        else:
-            self.handle_404()
-
-    def do_POST(self) -> None:
-        content_length = int(self.headers['Content-Length'])
-        post_data = self.rfile.read(content_length).decode('utf-8')
-
-        print(f"Received POST request for {self.path}: {post_data}")
-        if self.path == '/predict':
-            self.handle_predict(post_data)
+        elif self.path == '/predict':
+            self.handle_predict(request_body)
         elif self.path == '/multi-predict':
-            self.handle_multi_predict(post_data)
+            self.handle_multi_predict(request_body)
         else:
             self.handle_404()
 
