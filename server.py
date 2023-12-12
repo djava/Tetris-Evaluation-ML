@@ -4,12 +4,14 @@ import typing
 from http.server import BaseHTTPRequestHandler
 import constants
 from models.ModelBase import ModelBase
+from utils import generate_ptp_terms
 
 _models: dict = {}
 
 
 def predict_eval(heights: list[int]) -> dict[str, float]:
-    return {str(mt): mb.predict(heights) for mt, mb in _models.items()}
+    df = generate_ptp_terms(heights)
+    return {str(mt): mb.predict(df) for mt, mb in _models.items()}
 
 
 def get_model_test_mses() -> dict[str, float]:

@@ -3,13 +3,16 @@ from abc import ABC, abstractmethod
 import pandas as pd
 from sklearn.metrics import mean_squared_error
 
+_df = pd.DataFrame
+
 
 class ModelBase(ABC):
-    def __init__(self, dataset_path: str):
+    def __init__(self, dataset: (_df, _df, _df, _df)):
         self._cv_results = None
         self._model = self._get_model()
-        x_train, x_test, y_train, y_test = get_data_split(dataset_path)
-        self._model = self._train(x_train.values, y_train.values)
+        x_train, x_test, y_train, y_test = dataset
+        self._selected_features = x_train.columns
+        self._model = self._train(x_train, y_train)
 
         self.test_mse = self._get_mse_test_err(x_test, y_test)
 
@@ -22,11 +25,16 @@ class ModelBase(ABC):
         pass
 
     def _get_mse_test_err(self, x_test: pd.DataFrame, y_test: pd.DataFrame) -> float:
-        y_pred = self._model.predict(x_test.values)
+        y_pred = self._model.predict(x_test.loc[:, self._selected_features])
         return mean_squared_error(y_pred, y_test)
 
-    def predict(self, heights: list[int]) -> float:
-        return self._model.predict([heights])[0]
+    @abstractmethod
+    def predict(self, data: pd.DataFrame) -> float:
+        pass
+        if self._selected_features:
+            return self._model.predict(data.loc[:, self._selected_features])[0]
+        else:
+            return self._model.predict(data)[0]
 
     @property
     def cv_results(self) -> pd.DataFrame:
