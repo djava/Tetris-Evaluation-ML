@@ -48,7 +48,7 @@ def relevant_cols_from_cv_results(cv_results: sklearn.utils.Bunch) -> pd.DataFra
 
 def generate_ptp_terms(heights: list[int]) -> pd.DataFrame:
     num_columns = 10
-    df = pd.Dataframe({f'col{i}': heights[i] for i in range(num_columns)})
+    df = pd.DataFrame({f'col{i}': heights[i] for i in range(num_columns)})
     for width in range(2, num_columns + 1):
         for i in range(num_columns - width + 1):
             key_name = f'ptp({",".join(f"col{j}" for j in range(i, i + width))})'
