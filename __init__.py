@@ -6,7 +6,7 @@ from models.ModelBase import ModelBase
 from server import run_server
 
 models: dict[ModelType, ModelBase] = {}
-FORCE_RETRAIN: list[ModelType] = [ModelType.LASSO_REGRESSION]
+FORCE_RETRAIN: list[ModelType] = []
 
 dataset = utils.get_data_split(DATASET_PATH)
 
