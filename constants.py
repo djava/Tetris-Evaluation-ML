@@ -1,4 +1,4 @@
-import enum
+import enum, os
 from models import LinearRegression, DecisionTree, LassoRegression, RidgeRegression
 
 
@@ -25,4 +25,4 @@ MODEL_TYPE_ENUM_TO_CREATION_FN = {
 
 DATASET_PATH = './labelled_placements_local_ptp.csv'
 
-SERVER_PORT = 8000
+SERVER_PORT = os.getenv('PORT', 8000)
