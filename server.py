@@ -1,5 +1,6 @@
 import socketserver
 import json
+import time
 import typing
 from http.server import BaseHTTPRequestHandler
 
@@ -8,20 +9,19 @@ import joblib
 from constants import *
 from models.ModelBase import ModelBase
 from utils import generate_ptp_terms, inverse_normalized_eval
-import os
 from joblib import Parallel, delayed
 
 _models: dict[ModelType, ModelBase] = {}
 
 
-def predict_eval(heights: list[int]) -> dict[str, float]:
+def predict_eval(heights: list[int], models) -> dict[str, float]:
     def denorm(y: float, dataset_type: DataSetType) -> float:
         if dataset_type is DataSetType.NORMALIZED:
             y = inverse_normalized_eval(y)
         return y
 
     df = generate_ptp_terms(heights)
-    return {str(mt): denorm(mb.predict(df), mb.dataset_type) for mt, mb in _models.items()}
+    return {str(mt): denorm(mb.predict(df), mb.dataset_type) for mt, mb in models.items() if print('loop!') or True}
 
 
 def get_model_test_mses() -> dict[str, float]:
@@ -53,7 +53,7 @@ class RequestHandler(BaseHTTPRequestHandler):
     def handle_predict(self, post_data: str) -> None:
         try:
             json_data = json.loads(post_data)
-            eval_prediction = predict_eval(json_data['heights'])
+            eval_prediction = predict_eval(json_data['heights'], _models)
             response_message = json.dumps(eval_prediction)
 
             self.send_response(200)
@@ -71,12 +71,14 @@ class RequestHandler(BaseHTTPRequestHandler):
             return len(heights) == 10 and all(isinstance(i, int) for i in heights)
 
         try:
+            start_time = time.monotonic()
             json_data = json.loads(post_data)
             parallel = Parallel(n_jobs=-1)
-            eval_results = parallel(delayed(predict_eval)(h) for h in json_data['heights'] if is_valid(h))
+            eval_results = parallel(delayed(predict_eval)(h, _models) for h in json_data['heights'] if is_valid(h))
 
             eval_predictions = {
-                "eval": list(eval_results)
+                "eval": list(eval_results),
+                "time_elapsed": time.monotonic() - start_time
             }
             response_message = json.dumps(eval_predictions)
 
