@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 from sklearn.linear_model import LinearRegression as skLinearRegression
 from .ModelBase import *
 from sklearn.feature_selection import RFE
@@ -15,10 +16,11 @@ class LinearRegression(ModelBase):
         num_features = x_train.shape[1]
         cv = KFold(n_splits=5, shuffle=True, random_state=42)
 
-        # Backward stepwise model selection with cross-validation
+        cv_results = []
         best_mse = float('inf')
         best_num_features = num_features
 
+        # Backward stepwise model selection with cross-validation
         for i in range(num_features, 30, -1):
             print(f'Fitting {i} features')
 
@@ -33,6 +35,9 @@ class LinearRegression(ModelBase):
             if avg_mse < best_mse:
                 best_mse = avg_mse
                 best_num_features = i
+            cv_results.append((i, np.mean(mse_scores), np.std(mse_scores)))
+
+        self._cv_results = pd.DataFrame(cv_results, columns=['param_num_features', 'mean_mse_score', 'std_mse_score'])
 
         self._model.fit(x_train, y_train)
         selected_feature_idxs = np.argsort(np.abs(self._model.coef_))[-best_num_features:]

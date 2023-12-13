@@ -4,9 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9c69fdd5-44a1-428c-87c9-6537b768d193" name="Changes" comment="Remove extra models, switch to lvl19 data">
+    <list default="true" id="9c69fdd5-44a1-428c-87c9-6537b768d193" name="Changes" comment="Removing parallelization threshold improves performance">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model_pkls/lin_reg18_model.pkl" beforeDir="false" afterPath="$PROJECT_DIR$/model_pkls/lin_reg18_model.pkl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model_pkls/lin_reg19_model.pkl" beforeDir="false" afterPath="$PROJECT_DIR$/model_pkls/lin_reg19_model.pkl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model_pkls/lin_reg29_model.pkl" beforeDir="false" afterPath="$PROJECT_DIR$/model_pkls/lin_reg29_model.pkl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/LinearRegression.py" beforeDir="false" afterPath="$PROJECT_DIR$/models/LinearRegression.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server.py" beforeDir="false" afterPath="$PROJECT_DIR$/server.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -56,6 +61,7 @@
     "Python.__init__.executor": "Run",
     "Python.main.executor": "Run",
     "Python.no train.executor": "Run",
+    "Python.training allowed.executor": "Run",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "deletionFromPopupRequiresConfirmation": "false",
@@ -88,30 +94,8 @@
       <command value="terminal" />
     </option>
   </component>
-  <component name="RunManager" selected="Python.no train">
-    <configuration default="true" type="PythonConfigurationType" factoryName="Python">
-      <module name="cs4342 final project" />
-      <option name="ENV_FILES" value="" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="main" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
+  <component name="RunManager" selected="Python.training allowed">
+    <configuration name="training allowed" type="PythonConfigurationType" factoryName="Python">
       <module name="cs4342 final project" />
       <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -134,7 +118,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="no train" type="PythonConfigurationType" factoryName="Python">
+    <configuration name="training not allowed" type="PythonConfigurationType" factoryName="Python">
       <module name="cs4342 final project" />
       <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -157,74 +141,9 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration default="true" type="Tox" factoryName="Tox">
-      <module name="cs4342 final project" />
-      <option name="ENV_FILES" value="" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <method v="2" />
-    </configuration>
-    <configuration default="true" type="docs" factoryName="Docutils task">
-      <module name="cs4342 final project" />
-      <option name="ENV_FILES" value="" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="docutils_input_file" value="" />
-      <option name="docutils_output_file" value="" />
-      <option name="docutils_params" value="" />
-      <option name="docutils_task" value="" />
-      <option name="docutils_open_in_browser" value="false" />
-      <method v="2" />
-    </configuration>
-    <configuration default="true" type="docs" factoryName="Sphinx task">
-      <module name="cs4342 final project" />
-      <option name="ENV_FILES" value="" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="docutils_input_file" value="" />
-      <option name="docutils_output_file" value="" />
-      <option name="docutils_params" value="" />
-      <option name="docutils_task" value="" />
-      <option name="docutils_open_in_browser" value="false" />
-      <method v="2" />
-    </configuration>
-    <configuration default="true" type="tests" factoryName="Doctests">
-      <module name="cs4342 final project" />
-      <option name="ENV_FILES" value="" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="" />
-      <option name="CLASS_NAME" value="" />
-      <option name="METHOD_NAME" value="" />
-      <option name="FOLDER_NAME" value="" />
-      <option name="TEST_TYPE" value="TEST_SCRIPT" />
-      <option name="PATTERN" value="" />
-      <option name="USE_PATTERN" value="false" />
-      <method v="2" />
-    </configuration>
     <list>
-      <item itemvalue="Python.main" />
-      <item itemvalue="Python.no train" />
+      <item itemvalue="Python.training allowed" />
+      <item itemvalue="Python.training not allowed" />
     </list>
   </component>
   <component name="SharedIndexes">
@@ -379,7 +298,23 @@
       <option name="project" value="LOCAL" />
       <updated>1702440317887</updated>
     </task>
-    <option name="localTasksCounter" value="18" />
+    <task id="LOCAL-00018" summary="Remove extra models, switch to lvl19 data">
+      <option name="closed" value="true" />
+      <created>1702450657567</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1702450657567</updated>
+    </task>
+    <task id="LOCAL-00019" summary="Removing parallelization threshold improves performance">
+      <option name="closed" value="true" />
+      <created>1702451640759</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1702451640759</updated>
+    </task>
+    <option name="localTasksCounter" value="20" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -406,8 +341,10 @@
     <MESSAGE value="Fix joblib global issues, send back time_elapsed" />
     <MESSAGE value="Only choose one model in the API instead of returning" />
     <MESSAGE value="ooooops" />
+    <MESSAGE value="Add models" />
     <MESSAGE value="Remove extra models, switch to lvl19 data" />
-    <option name="LAST_COMMIT_MESSAGE" value="Remove extra models, switch to lvl19 data" />
+    <MESSAGE value="Removing parallelization threshold improves performance" />
+    <option name="LAST_COMMIT_MESSAGE" value="Removing parallelization threshold improves performance" />
   </component>
   <component name="XDebuggerManager">
     <watches-manager>
