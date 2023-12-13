@@ -14,14 +14,14 @@ from joblib import Parallel, delayed
 _models: dict[ModelType, ModelBase] = {}
 
 
-def predict_eval(heights: list[int], models) -> dict[str, float]:
-    def denorm(y: float, dataset_type: DataSetType) -> float:
-        if dataset_type is DataSetType.NORMALIZED:
-            y = inverse_normalized_eval(y)
-        return y
-
+def predict_eval(heights: list[int], model: ModelBase) -> float:
     df = generate_ptp_terms(heights)
-    return {str(mt): denorm(mb.predict(df), mb.dataset_type) for mt, mb in models.items() if print('loop!') or True}
+
+    prediction = model.predict(df)
+    if model.dataset_type is DataSetType.NORMALIZED:
+        prediction = inverse_normalized_eval(prediction)
+
+    return prediction
 
 
 def get_model_test_mses() -> dict[str, float]:
@@ -53,7 +53,8 @@ class RequestHandler(BaseHTTPRequestHandler):
     def handle_predict(self, post_data: str) -> None:
         try:
             json_data = json.loads(post_data)
-            eval_prediction = predict_eval(json_data['heights'], _models)
+            model = _models[ModelType(json_data['model'])]
+            eval_prediction = predict_eval(json_data['heights'], model)
             response_message = json.dumps(eval_prediction)
 
             self.send_response(200)
@@ -73,8 +74,9 @@ class RequestHandler(BaseHTTPRequestHandler):
         try:
             start_time = time.monotonic()
             json_data = json.loads(post_data)
+            model = _models[ModelType(json_data['model'])]
             parallel = Parallel(n_jobs=-1)
-            eval_results = parallel(delayed(predict_eval)(h, _models) for h in json_data['heights'] if is_valid(h))
+            eval_results = parallel(delayed(predict_eval)(h, model) for h in json_data['heights'] if is_valid(h))
 
             eval_predictions = {
                 "eval": list(eval_results),
