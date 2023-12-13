@@ -8,7 +8,7 @@ import numpy as np
 import sys
 
 models: dict[ModelID, ModelBase] = {}
-FORCE_RETRAIN: list[ModelID | ModelType | DataSetLevel | DataSetNorm] = [ModelID.LINEAR_REGRESSION_18]
+FORCE_RETRAIN: list[ModelID | ModelType | DataSetLevel | DataSetNorm] = []
 
 
 def must_retrain_model(model_id: ModelID, model_type: ModelType,
