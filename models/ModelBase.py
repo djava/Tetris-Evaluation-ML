@@ -5,16 +5,16 @@ import pandas as pd
 from sklearn.metrics import mean_squared_error
 from utils import inverse_normalized_eval
 
-from DataSetType import DataSetType
+from DataSetTypes import DataSetNorm
 
 _df = pd.DataFrame
 
 
 class ModelBase(ABC):
-    def __init__(self, dataset: (_df, _df, _df, _df), dataset_type: DataSetType):
+    def __init__(self, dataset: (_df, _df, _df, _df), dataset_norm: DataSetNorm):
         self._cv_results = None
         self._model = self._get_model()
-        self.dataset_type = dataset_type
+        self.dataset_norm = dataset_norm
 
         x_train, x_test, y_train, y_test = dataset
         self._selected_features = x_train.columns
@@ -32,7 +32,7 @@ class ModelBase(ABC):
 
     def _get_mse_test_err(self, x_test: pd.DataFrame, y_test: pd.DataFrame) -> float:
         y_pred = self._model.predict(x_test.loc[:, self._selected_features])
-        if self.dataset_type is DataSetType.NORMALIZED:
+        if self.dataset_norm is DataSetNorm.NORMALIZED:
             y_pred = inverse_normalized_eval(y_pred)
             y_test = inverse_normalized_eval(y_test)
 

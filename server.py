@@ -7,18 +7,18 @@ from http.server import BaseHTTPRequestHandler
 from constants import *
 from models.ModelBase import ModelBase
 from utils import generate_ptp_terms, inverse_normalized_eval
-from joblib import Parallel, delayed
+from joblib import Parallel, delayed, cpu_count
 from functools import lru_cache
 
-_models: dict[ModelType, ModelBase] = {}
+_models: dict[ModelID, ModelBase] = {}
 
 
-# @lru_cache()
+@lru_cache()
 def predict_eval(heights: tuple[int], model: ModelBase) -> float:
     df = generate_ptp_terms(heights)
 
     prediction = model.predict(df)
-    if model.dataset_type is DataSetType.NORMALIZED:
+    if model.dataset_norm is DataSetNorm.NORMALIZED:
         prediction = inverse_normalized_eval(prediction)
 
     return prediction
@@ -53,7 +53,7 @@ class RequestHandler(BaseHTTPRequestHandler):
     def handle_predict(self, post_data: str) -> None:
         try:
             json_data = json.loads(post_data)
-            model = _models[ModelType(json_data['model'])]
+            model = _models[ModelID(json_data['model'])]
             eval_prediction = predict_eval(json_data['heights'], model)
             response_message = json.dumps(eval_prediction)
 
@@ -74,13 +74,13 @@ class RequestHandler(BaseHTTPRequestHandler):
         try:
             start_time = time.monotonic()
             json_data = json.loads(post_data)
-            model = _models[ModelType(json_data['model'])]
+            model = _models[ModelID(json_data['model'])]
 
             if 'multiplier' in json_data.keys():
                 json_data['heights'] = json_data['heights'] * json_data['multiplier']
 
             if len(json_data['heights']) > 50:
-                parallel = Parallel(n_jobs=-1)
+                parallel = Parallel(n_jobs=cpu_count-2)
                 eval_results = list(parallel(delayed(predict_eval)(tuple(h), model)
                                              for h in json_data['heights']
                                              if is_valid(h)))

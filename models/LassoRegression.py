@@ -5,7 +5,8 @@ from joblib import Parallel, delayed
 from .ModelBase import *
 import numpy as np
 from sklearn.model_selection import GridSearchCV, KFold, cross_val_score
-from DataSetType import DataSetType
+from DataSetTypes import DataSetNorm
+
 
 class LassoRegression(ModelBase):
     def _get_model(self) -> Lasso:
@@ -22,11 +23,7 @@ class LassoRegression(ModelBase):
             return _alpha, cv_score.mean(), cv_score.std()
 
         parallel = Parallel(n_jobs=10)
-        if self.dataset_type is DataSetType.NORMALIZED:
-            all_alpha = [1e-4, 5e-4, 1e-3]
-        else:
-            all_alpha = [0.025, 0.05, 0.075, 0.1, 0.5, 1]
-        results = list(parallel(delayed(train_model)(alpha) for alpha in all_alpha))
+        results = list(parallel(delayed(train_model)(alpha) for alpha in [1e-4, 5e-4, 1e-3]))
         self._cv_results = pd.DataFrame(results, columns=['param_alpha', 'avg_test_score', 'std_test_score'])
 
         best_alpha, best_cv_score, best_cv_std = max(results, key=(lambda x: x[1]))

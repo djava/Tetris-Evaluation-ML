@@ -16,7 +16,7 @@ class DecisionTree(ModelBase):
             'min_samples_leaf': [1, 2, 4]
         }
         grid_search = GridSearchCV(estimator=self._model, param_grid=param_grid, cv=5,
-                                   scoring='neg_mean_squared_error', n_jobs=-1, verbose=2)
+                                   scoring='neg_mean_squared_error', n_jobs=10, verbose=2)
         grid_search.fit(x_train, y_train)
 
         self._cv_results = relevant_cols_from_cv_results(grid_search.cv_results_)

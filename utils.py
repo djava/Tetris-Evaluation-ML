@@ -5,22 +5,7 @@ import pandas as pd
 import sklearn.utils
 from sklearn.model_selection import train_test_split
 import numpy as np
-import time
-
-def add_local_interaction_columns(data: pd.DataFrame) -> pd.DataFrame:
-    print('*'*20, "ADDING PTPs!!!!", '*'*20, sep='\n')
-    time.sleep(10)
-    print('ok starting ptps')
-    num_columns = 10
-    for width in range(2, num_columns + 1):
-        for i in range(num_columns - width + 1):
-            key_name = f'ptp({",".join(f"col{j}" for j in range(i, i + width))})'
-            print(f'Adding column: {key_name}')
-            col = data.loc[:, (f'col{j}' for j in range(i, i + width))].apply(np.ptp, axis=1)
-
-            data[key_name] = col
-    data.to_csv('labelled_placements_level19_local_ptp.csv')
-    return data
+from DataSetTypes import DataSetNorm
 
 
 def normalize_sr_eval(y_i: float) -> float:
@@ -36,7 +21,7 @@ def inverse_normalized_eval(y_i: float | np.ndarray) -> float | np.ndarray:
     return ((1 / j) * -np.log((1.4 / y_i) - 1)) - 25
 
 
-def get_data_split(dataset_path: str, normalized: bool) \
+def get_data_split(dataset_path: str, dataset_norm: DataSetNorm) \
         -> (pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame):
     """
     :param dataset_path: Path to get the dataset from
@@ -44,11 +29,10 @@ def get_data_split(dataset_path: str, normalized: bool) \
     :return: Dataset split into x_train, x_test, y_train, y_test
     """
     df = pd.read_csv(dataset_path)
-    # df = add_local_interaction_columns(df)
 
     x = df.drop(['eval', 'Unnamed: 0'], axis=1)
     y = df['eval']
-    if normalized:
+    if dataset_norm is DataSetNorm.NORMALIZED:
         y = y.apply(normalize_sr_eval)
 
     # Split the data into training and testing sets
