@@ -7,7 +7,7 @@ from server import run_server
 import numpy as np
 
 models: dict[ModelType, ModelBase] = {}
-FORCE_RETRAIN: list[ModelType] = [ModelType.LASSO_REGRESSION]
+FORCE_RETRAIN: list[ModelType] = []
 
 dataset_not_norm = utils.get_data_split(DATASET_PATH, False)
 dataset_norm = utils.get_data_split(DATASET_PATH, True)

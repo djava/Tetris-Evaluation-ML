@@ -2,9 +2,14 @@ import socketserver
 import json
 import typing
 from http.server import BaseHTTPRequestHandler
+
+import joblib
+
 from constants import *
 from models.ModelBase import ModelBase
 from utils import generate_ptp_terms, inverse_normalized_eval
+import os
+from joblib import Parallel, delayed
 
 _models: dict[ModelType, ModelBase] = {}
 
@@ -28,6 +33,8 @@ class RequestHandler(BaseHTTPRequestHandler):
         print(f"Received GET request for {self.path}")
         if self.path == '/model-info':
             self.handle_model_info()
+        elif self.path == '/cpu-info':
+            self.handle_cpu_info()
         else:
             self.handle_404()
 
@@ -65,8 +72,11 @@ class RequestHandler(BaseHTTPRequestHandler):
 
         try:
             json_data = json.loads(post_data)
+            parallel = Parallel(n_jobs=-1)
+            eval_results = parallel(delayed(predict_eval)(h) for h in json_data['heights'] if is_valid(h))
+
             eval_predictions = {
-                "eval": [predict_eval(heights) for heights in json_data['heights'] if is_valid(heights)]
+                "eval": list(eval_results)
             }
             response_message = json.dumps(eval_predictions)
 
@@ -86,6 +96,15 @@ class RequestHandler(BaseHTTPRequestHandler):
 
         self.send_response(200)
         self.send_header("Content-type", "application/json")
+        self.end_headers()
+        self.wfile.write(response_message.encode())
+        print(f"Sent response: {response_message}")
+
+    def handle_cpu_info(self) -> None:
+        response_message = str(joblib.cpu_count())
+
+        self.send_response(200)
+        self.send_header("Content-type", "application/text")
         self.end_headers()
         self.wfile.write(response_message.encode())
         print(f"Sent response: {response_message}")
