@@ -5,9 +5,12 @@ import pandas as pd
 import sklearn.utils
 from sklearn.model_selection import train_test_split
 import numpy as np
-
+import time
 
 def add_local_interaction_columns(data: pd.DataFrame) -> pd.DataFrame:
+    print('*'*20, "ADDING PTPs!!!!", '*'*20, sep='\n')
+    time.sleep(10)
+    print('ok starting ptps')
     num_columns = 10
     for width in range(2, num_columns + 1):
         for i in range(num_columns - width + 1):
@@ -16,7 +19,7 @@ def add_local_interaction_columns(data: pd.DataFrame) -> pd.DataFrame:
             col = data.loc[:, (f'col{j}' for j in range(i, i + width))].apply(np.ptp, axis=1)
 
             data[key_name] = col
-    data.to_csv('labelled_placements_local_ptp.csv')
+    data.to_csv('labelled_placements_level19_local_ptp.csv')
     return data
 
 
@@ -27,10 +30,9 @@ def normalize_sr_eval(y_i: float) -> float:
     return numerator / denominator
 
 
-def inverse_normalized_eval(y_i: float) -> float:
-    y_i = min(max(y_i, float_info.epsilon), 1)
+def inverse_normalized_eval(y_i: float | np.ndarray) -> float | np.ndarray:
+    y_i = np.minimum(np.maximum(y_i, float_info.epsilon), 1)
     j = 0.01
-    print(y_i)
     return ((1 / j) * -np.log((1.4 / y_i) - 1)) - 25
 
 
@@ -42,6 +44,7 @@ def get_data_split(dataset_path: str, normalized: bool) \
     :return: Dataset split into x_train, x_test, y_train, y_test
     """
     df = pd.read_csv(dataset_path)
+    # df = add_local_interaction_columns(df)
 
     x = df.drop(['eval', 'Unnamed: 0'], axis=1)
     y = df['eval']

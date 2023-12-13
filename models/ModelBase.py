@@ -1,6 +1,9 @@
 from abc import ABC, abstractmethod
+
+import numpy as np
 import pandas as pd
 from sklearn.metrics import mean_squared_error
+from utils import inverse_normalized_eval
 
 from DataSetType import DataSetType
 
@@ -29,6 +32,10 @@ class ModelBase(ABC):
 
     def _get_mse_test_err(self, x_test: pd.DataFrame, y_test: pd.DataFrame) -> float:
         y_pred = self._model.predict(x_test.loc[:, self._selected_features])
+        if self.dataset_type is DataSetType.NORMALIZED:
+            y_pred = inverse_normalized_eval(y_pred)
+            y_test = inverse_normalized_eval(y_test)
+
         return mean_squared_error(y_pred, y_test)
 
     @abstractmethod
