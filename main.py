@@ -7,7 +7,7 @@ from server import run_server
 import numpy as np
 
 models: dict[ModelType, ModelBase] = {}
-FORCE_RETRAIN: list[ModelType] = []
+FORCE_RETRAIN: list[ModelType] = ['*']
 
 dataset_not_norm = utils.get_data_split(DATASET_PATH, False)
 dataset_norm = utils.get_data_split(DATASET_PATH, True)
@@ -35,7 +35,7 @@ def init_models():
                 with open(model_path, 'rb') as f:
                     old_model = pickle.load(f)
                 timestamp = os.path.getmtime(model_path)
-                new_pkl_suffix = f'-mse{old_model.test_mse:2e}-ts{int(timestamp)}.pkl'
+                new_pkl_suffix = f'-mse{int(old_model.test_mse)}-ts{int(timestamp)}.pkl'
                 new_pkl_name = os.path.basename(model_path).replace('.pkl', new_pkl_suffix)
                 os.rename(model_path, f'{archive_dir}/{new_pkl_name}')
                 print(f'Archived old model as {new_pkl_name}')
@@ -50,7 +50,7 @@ def init_models():
                 pickle.dump(model, f)
 
             print(f'Created and saved {model_type} model at {os.path.basename(model_path)}',
-                  f'Test MSE: {model.test_mse:.2e}',
+                  f'Test MSE: {round(model.test_mse, 2)}',
                   sep=' | ')
 
             if model.cv_results is not None:

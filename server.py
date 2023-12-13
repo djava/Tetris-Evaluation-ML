@@ -4,17 +4,17 @@ import time
 import typing
 from http.server import BaseHTTPRequestHandler
 
-import joblib
-
 from constants import *
 from models.ModelBase import ModelBase
 from utils import generate_ptp_terms, inverse_normalized_eval
 from joblib import Parallel, delayed
+from functools import lru_cache
 
 _models: dict[ModelType, ModelBase] = {}
 
 
-def predict_eval(heights: list[int], model: ModelBase) -> float:
+# @lru_cache()
+def predict_eval(heights: tuple[int], model: ModelBase) -> float:
     df = generate_ptp_terms(heights)
 
     prediction = model.predict(df)
@@ -75,11 +75,22 @@ class RequestHandler(BaseHTTPRequestHandler):
             start_time = time.monotonic()
             json_data = json.loads(post_data)
             model = _models[ModelType(json_data['model'])]
-            parallel = Parallel(n_jobs=-1)
-            eval_results = parallel(delayed(predict_eval)(h, model) for h in json_data['heights'] if is_valid(h))
+
+            if 'multiplier' in json_data.keys():
+                json_data['heights'] = json_data['heights'] * json_data['multiplier']
+
+            if len(json_data['heights']) > 50:
+                parallel = Parallel(n_jobs=-1)
+                eval_results = list(parallel(delayed(predict_eval)(tuple(h), model)
+                                             for h in json_data['heights']
+                                             if is_valid(h)))
+            else:
+                eval_results = [predict_eval(tuple(h), model)
+                                for h in json_data['heights']
+                                if is_valid(h)]
 
             eval_predictions = {
-                "eval": list(eval_results),
+                "eval": eval_results,
                 "time_elapsed": time.monotonic() - start_time
             }
             response_message = json.dumps(eval_predictions)
