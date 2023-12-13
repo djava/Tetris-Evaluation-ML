@@ -11,10 +11,11 @@ class ModelBase(ABC):
     def __init__(self, dataset: (_df, _df, _df, _df), dataset_type: DataSetType):
         self._cv_results = None
         self._model = self._get_model()
+        self.dataset_type = dataset_type
+
         x_train, x_test, y_train, y_test = dataset
         self._selected_features = x_train.columns
         self._model = self._train(x_train, y_train)
-        self.dataset_type = dataset_type
 
         self.test_mse = self._get_mse_test_err(x_test, y_test)
 
