@@ -104,7 +104,7 @@ class RequestHandler(BaseHTTPRequestHandler):
         response_message = str(joblib.cpu_count())
 
         self.send_response(200)
-        self.send_header("Content-type", "application/text")
+        self.send_header("Content-type", "text/plain")
         self.end_headers()
         self.wfile.write(response_message.encode())
         print(f"Sent response: {response_message}")
