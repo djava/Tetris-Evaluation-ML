@@ -13,7 +13,7 @@ from functools import lru_cache
 _models: dict[ModelID, ModelBase] = {}
 
 
-@lru_cache()
+# @lru_cache()
 def predict_eval(heights: tuple[int], model: ModelBase) -> float:
     df = generate_ptp_terms(heights)
 
@@ -79,15 +79,10 @@ class RequestHandler(BaseHTTPRequestHandler):
             if 'multiplier' in json_data.keys():
                 json_data['heights'] = json_data['heights'] * json_data['multiplier']
 
-            if len(json_data['heights']) > 50:
-                parallel = Parallel(n_jobs=cpu_count())
-                eval_results = list(parallel(delayed(predict_eval)(tuple(h), model)
-                                             for h in json_data['heights']
-                                             if is_valid(h)))
-            else:
-                eval_results = [predict_eval(tuple(h), model)
-                                for h in json_data['heights']
-                                if is_valid(h)]
+            parallel = Parallel(n_jobs=cpu_count())
+            eval_results = list(parallel(delayed(predict_eval)(tuple(h), model)
+                                         for h in json_data['heights']
+                                         if is_valid(h)))
 
             eval_predictions = {
                 "eval": eval_results,
