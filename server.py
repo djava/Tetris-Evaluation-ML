@@ -80,7 +80,7 @@ class RequestHandler(BaseHTTPRequestHandler):
                 json_data['heights'] = json_data['heights'] * json_data['multiplier']
 
             if len(json_data['heights']) > 50:
-                parallel = Parallel(n_jobs=cpu_count-2)
+                parallel = Parallel(n_jobs=cpu_count())
                 eval_results = list(parallel(delayed(predict_eval)(tuple(h), model)
                                              for h in json_data['heights']
                                              if is_valid(h)))
