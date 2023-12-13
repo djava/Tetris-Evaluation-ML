@@ -5,23 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9c69fdd5-44a1-428c-87c9-6537b768d193" name="Changes" comment="Remove extra models, switch to lvl19 data">
-      <change afterPath="$PROJECT_DIR$/labelled_placements_level19.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/labelled_placements_level19_local_ptp.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/constants.py" beforeDir="false" afterPath="$PROJECT_DIR$/constants.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/model_pkls/cv_results_decision_tree.csv" beforeDir="false" afterPath="$PROJECT_DIR$/model_pkls/cv_results_decision_tree.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/model_pkls/cv_results_lasso_regression.csv" beforeDir="false" afterPath="$PROJECT_DIR$/model_pkls/cv_results_lasso_regression.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/model_pkls/dec_trees_model.pkl" beforeDir="false" afterPath="$PROJECT_DIR$/model_pkls/dec_trees_model.pkl" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/model_pkls/dec_trees_norm_model.pkl" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/model_pkls/lasso_model.pkl" beforeDir="false" afterPath="$PROJECT_DIR$/model_pkls/lasso_model.pkl" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/model_pkls/lasso_norm_model.pkl" beforeDir="false" afterPath="$PROJECT_DIR$/model_pkls/lasso_norm_model.pkl" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/model_pkls/lin_reg_model.pkl" beforeDir="false" afterPath="$PROJECT_DIR$/model_pkls/lin_reg_model.pkl" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/model_pkls/lin_reg_norm_model.pkl" beforeDir="false" afterPath="$PROJECT_DIR$/model_pkls/lin_reg_norm_model.pkl" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/LassoRegression.py" beforeDir="false" afterPath="$PROJECT_DIR$/models/LassoRegression.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/ModelBase.py" beforeDir="false" afterPath="$PROJECT_DIR$/models/ModelBase.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server.py" beforeDir="false" afterPath="$PROJECT_DIR$/server.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -118,7 +102,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="main.py" />
-      <option name="PARAMETERS" value="" />
+      <option name="PARAMETERS" value="train" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -271,7 +255,15 @@
       <option name="project" value="LOCAL" />
       <updated>1702440168853</updated>
     </task>
-    <option name="localTasksCounter" value="17" />
+    <task id="LOCAL-00017" summary="Remove extra models, switch to lvl19 data">
+      <option name="closed" value="true" />
+      <created>1702440317887</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1702440317887</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -297,19 +289,11 @@
     <MESSAGE value="Fix content-type of cpu-info endpoint" />
     <MESSAGE value="Fix joblib global issues, send back time_elapsed" />
     <MESSAGE value="Only choose one model in the API instead of returning" />
+    <MESSAGE value="ooooops" />
     <MESSAGE value="Remove extra models, switch to lvl19 data" />
     <option name="LAST_COMMIT_MESSAGE" value="Remove extra models, switch to lvl19 data" />
   </component>
   <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/main.py</url>
-          <line>68</line>
-          <option name="timeStamp" value="7" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
     <watches-manager>
       <configuration name="PythonConfigurationType">
         <watch expression="models[&lt;ModelType.LINEAR_REGRESSION: 'linear_regression'&gt;]._model.feature_names_in_[7]" />

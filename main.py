@@ -5,9 +5,10 @@ import pickle
 from models.ModelBase import ModelBase
 from server import run_server
 import numpy as np
+import sys
 
 models: dict[ModelType, ModelBase] = {}
-FORCE_RETRAIN: list[ModelType] = ['*']
+FORCE_RETRAIN: list[ModelType] = []
 
 dataset_not_norm = utils.get_data_split(DATASET_PATH, False)
 dataset_norm = utils.get_data_split(DATASET_PATH, True)
@@ -64,5 +65,8 @@ def init_models():
 
 
 if __name__ == '__main__':
+    if 'train' not in sys.argv:
+        FORCE_RETRAIN = []
+        print('Not retraining!')
     init_models()
     run_server(models)
