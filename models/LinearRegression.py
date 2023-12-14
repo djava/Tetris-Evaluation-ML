@@ -24,7 +24,12 @@ class LinearRegression(ModelBase):
         for i in range(num_features, 30, -1):
             print(f'Fitting {i} features')
 
-            selected_features = np.argsort(np.abs(self._model.fit(x_train, y_train).coef_))[-i:]
+            args_sorted = np.argsort(np.abs(self._model.fit(x_train, y_train).coef_))
+            selected_features = args_sorted[-i:]
+            if i < num_features:
+                removed_feature = x_train.columns[args_sorted[-i-1]]
+            else:
+                removed_feature = None
             x_selected = x_train.loc[:, x_train.columns[selected_features]]
 
             # Compute cross-validated mean squared error
@@ -35,9 +40,10 @@ class LinearRegression(ModelBase):
             if avg_mse < best_mse:
                 best_mse = avg_mse
                 best_num_features = i
-            cv_results.append((i, np.mean(mse_scores), np.std(mse_scores)))
+            cv_results.append((i, np.mean(mse_scores), np.std(mse_scores), removed_feature))
 
-        self._cv_results = pd.DataFrame(cv_results, columns=['param_num_features', 'mean_mse_score', 'std_mse_score'])
+        self._cv_results = pd.DataFrame(cv_results, columns=['param_num_features', 'mean_mse_score', 'std_mse_score',
+                                                             'removed_feature'])
 
         self._model.fit(x_train, y_train)
         selected_feature_idxs = np.argsort(np.abs(self._model.coef_))[-best_num_features:]
